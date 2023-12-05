@@ -6,6 +6,7 @@
 
 import './bootstrap';
 import { createApp } from 'vue';
+import store from './store'; // Vuex store
 import { createRouter, createWebHistory } from 'vue-router';
 
 /**
@@ -48,19 +49,38 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', component: UserList },
-        { path: '/users/create', component: UserForm },            
-        { path: '/users/:id/edit', component: UserForm },
-        { path: '/userlogin', component: UserLogin },
-        { path: '/blogs/create', component: BlogForm },
-        { path: '/blogs/:id/edit', component: BlogForm },
-        { path: '/blogs/:id/view', component: BlogShow },
-        { path: '/blogs', component: BlogList },
-        { path: '/comments', component: ViewPendingComments },
-        { path: '/comments/:id/edit', component: ModerateComment },
+        { path: '/users/create', component: UserForm, meta:{public: false} },            
+        { path: '/users/:id/edit', component: UserForm, meta:{public: false} },
+        { path: '/userlogin', component: UserLogin, meta:{public: true} },
+        { path: '/blogs/create', component: BlogForm, meta:{public: false} },
+        { path: '/blogs/:id/edit', component: BlogForm, meta:{public: false} },
+        { path: '/blogs/:id/view', component: BlogShow, meta:{public: false} },
+        { path: '/blogs', component: BlogList, meta:{public: false} },
+        { path: '/comments', component: ViewPendingComments, meta:{public: false} },
+        { path: '/comments/:id/edit', component: ModerateComment, meta:{public: false} },
     ]
 });
 
+router.beforeEach((to, from, next) => {
+    // Check if the user is authenticated (e.g., check if a token is stored)
+    const isAuthenticated = !!localStorage.getItem('token');
+    
+    
+    if (!to.meta.public && !isAuthenticated) {
+        // If the route is not public and the user is not authenticated, redirect to login
+        next({ path: '/userlogin' });
+    } else {
+        // Otherwise, allow navigation
+        next();
+    }
+});
+
 const app = createApp(App);
+
+app.use(store);
 app.use(router);
 
+
 app.mount('#app');
+
+export default router;
