@@ -1,4 +1,8 @@
 <?php
+// This AuthController handles user login and logout functions. User model is used.
+// Developed by Ishan
+// Developed date: 2023-Nov-26
+// Last Updated: 2023-Dec-04
 
 namespace App\Http\Controllers;
 
@@ -8,19 +12,26 @@ use App\Models\User; // User model
 
 class AuthController extends Controller
 {
-    //
-
+    // function to handle user login
     public function login(Request $request){
         // validate incoming input data
         $request->validate([
-            'email' => 'required|max:150|string|email',
-            'password' => 'required|string|max:255'
-        ]);
+            'email' => 'required|max:150|email',
+            'password' => 'required|max:255'
+        ],
+        [
+            'email.required' => 'Email cannot be empty', // custom error message
+            'email.email' => 'Enter a valid email address',
+            'email.max' => 'Email cannot exceed 150 characters',
+            'password.required' => 'Password cannot be empty',
+            'password.max' => 'Password cannot exceed 255 characters'
+        ]
+        );
 
         // check if the provided credentials are valid
         if(!Auth::attempt($request->only('email','password'))){
             // invalid login. Return status code 401 for unauthorized
-            return response()->json(['message'=>'Invalid username/password'],401);
+            return response()->json(['message'=>'Invalid username/password', 'status'=>401],401);
         }
 
         // if credentials are valid get the authenticated user
