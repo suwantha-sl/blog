@@ -20,9 +20,11 @@ use App\Http\Controllers\ForgotPasswordController;
 */
 
 Route::middleware('auth:sanctum')->group(function (){
-    Route::middleware('auth:sanctum')->get('/blogs/{blog}', 'BlogPostController@show');
+    //Route::get('/blogs/{blog}', 'BlogPostController@show');
+    Route::put('/blog/{blog}', [BlogPostController::class, 'update']);
     Route::resource('blogs',BlogPostController::class); 
-    Route::resource('comments',CommentController::class);    
+    Route::resource('comments',CommentController::class); 
+    Route::middleware('auth:sanctum')->get('/viewcomments/{id}',[CommentController::class,'getBlogComments']);   
     Route::middleware('auth:sanctum')->get('/logout',[AuthController::class,'logout']);
 });
 

@@ -8,24 +8,27 @@ export default createStore({
 // State object contains all the reactive data that we want to share across components
 state: {
 // Initialize isLoggedIn from localStorage to persist login status across page refreshes
-isLoggedIn: !!localStorage.getItem('token')
+isLoggedIn: !!localStorage.getItem('token'),
+isSuperAdmin: localStorage.getItem('userType') === 'SA'
 
 },
-getters: {
+/*getters: {
     isSuperAdmin: state => {
       return state.isLoggedIn && localStorage.getItem('userType') === 'SA';
     },
-},
+},*/
 // Mutations are functions that directly mutate the state.
 // Each mutation handler gets the entire state tree as the first argument.
 mutations: {
 // Mutation to set isLoggedIn to true
 LOGIN(state) {
-state.isLoggedIn = true
+state.isLoggedIn = true;
+state.isSuperAdmin = localStorage.getItem('userType') === 'SA';
 },
 // Mutation to set isLoggedIn to false
 LOGOUT(state) {
-state.isLoggedIn = false
+state.isLoggedIn = false;
+state.isSuperAdmin = false;
 }
 },
 // Actions are functions that cause side effects and can involve
