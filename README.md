@@ -6,7 +6,7 @@ Node Js
 This guide will support setting up the project in a Windows OS environment.
 
 1. Download the project folder from the below GitHub link.
-.....Link........
+(https://github.com/suwantha-sl/blog.git)
 
 2. Extract a copy of the downloaded folder to your local hard drive (Eg, C or D drive). 
 In my example it is D:\vhost\blog-app.
