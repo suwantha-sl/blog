@@ -3,9 +3,7 @@
     <h2 v-if="isNewArticle">Create New Blog Post</h2>
     <h2 v-else>Edit Blog Post</h2>
       <form @submit.prevent="submitForm">        
-        <div class="alert alert-success" role="alert" v-if="success" >
-          {{ success }}
-        </div>
+        
         <div class="mb-3">
           <label for="article_title" class="form-label">Blog Title:</label>
           <input class="form-control" type="text" id="article_title" v-model="article.article_title" required />
@@ -41,6 +39,10 @@
         
         <button type="submit" v-if="isNewArticle" class="btn btn-primary">Save</button>
         <button type="submit" v-else class="btn btn-primary">Update</button>
+
+        <div class="alert alert-success" role="alert" v-if="success" >
+          {{ success }}
+        </div>
       </form>
   </div>
 </template>
@@ -66,6 +68,8 @@ export default {
     }
   },
   async created() {
+    this.errors = {};
+    this.success = '';
     if (!this.isNewArticle) {
       const response = await axios.get(`/api/blogs/${this.$route.params.id}`,{
                     headers: {
@@ -89,7 +93,7 @@ export default {
       const coverImageInput = this.$refs.article_cover;
       const coverImage = coverImageInput.files[0];
       
-      if(coverImage){
+      if(coverImage ){
         // validate file size in bytes
         const maxSize = 2 * 1024 * 1024; // 2MB
 
@@ -106,7 +110,9 @@ export default {
         }
 
       }else{
-        this.errors.article_cover = ['Please select a cover image.'];
+        if(this.isNewArticle){
+          this.errors.article_cover = ['Please select a cover image.'];
+        }        
       }
     },
     async submitForm() {
@@ -122,13 +128,13 @@ export default {
       try {
         const blogData = new FormData(); // use FormData object to handle file uploads
 
-        blogData.append('article_title',this.article.article_title);
-        blogData.append('article_cover',this.$refs.article_cover.files[0]);
-        blogData.append('article_category',this.article.article_category);
-        blogData.append('article_content',this.article.article_content);
+        blogData.append('blog[article_title]',this.article.article_title);
+        blogData.append('blog[article_cover]',this.$refs.article_cover.files[0]);
+        blogData.append('blog[article_category]',this.article.article_category);
+        blogData.append('blog[article_content]',this.article.article_content);
 
         let response; // Define a variable to store response
-
+        console.log(this.article.article_title);
         if (this.isNewArticle) {          
           response = await axios.post('/api/blogs', blogData, {
                     headers: {
@@ -140,13 +146,26 @@ export default {
             this.success = response.data.message;
             console.log(this.success);
           }
-        } else {
-          await axios.put(`/api/blogs/${this.$route.params.id}`, blogData,{
+        } else {  
+          const blogDataEdit = {
+              article_title: this.article.article_title,
+              article_cover: this.$refs.article_cover.files[0],
+              article_category: this.article.article_category,
+              article_content: this.article.article_content,
+          };
+
+          response = await axios.put(`/api/blogs/${this.$route.params.id}`, blogDataEdit,{
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
-                        'content-type': 'multipart/form-data'
-                    }                   
+						            'Content-Type': 'multipart/form-data'                        
+                    } ,
+                    transformRequest: [data => JSON.stringify(data)],                   
+										
           });
+        }
+        if (response.data && response.data.status == 200) {
+            this.success = response.data.message;
+            console.log(this.success);
         }
         //this.$router.push('/');
       } catch (error) {

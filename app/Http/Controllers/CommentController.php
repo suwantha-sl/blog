@@ -17,8 +17,23 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
-        return (DB::table('comments')->get());
+        // Executes sp_GetIndividualComments stored procedure and retrieve comments
+		// Parameters for the stored procedure are user id, user type
+		// If logged in user is Super Admin the procedure will return all comments.
+		// If logged in user is Blog Admin the procedure will return comments only for his blogs
+        
+		// check for authorized access
+
+		if(Auth::check()){
+		  try{
+			  $receivedComments = DB::select('CALL sp_GetIndividualComments('.Auth::user()->id.',\''.Auth::user()->user_type.'\')');
+			  return response()->json(['reccomments'=> $receivedComments, 'status'=> 200],200);	// ok
+		  }catch(QueryException $ex){
+			  return response()->json(['message'=>'Error! database error', 'status'=> 500],500); // sql excemption error
+		  }		
+		}else{
+		  return response()->json(['message'=>'unauthorised user', 'status'=> 401],401); // unauthorised access	
+		}
     }
 
     /**
@@ -38,6 +53,9 @@ class CommentController extends Controller
         $request->validate([
             'ori_comment' => 'required',  
             'blog_id' => 'required|integer',                     
+        ],
+        [
+            'ori_comment.required' => 'Comment cannot be empty.'
         ]);
 
         $commentor = Auth::user()->id; // Get the logedin user id;
@@ -50,8 +68,12 @@ class CommentController extends Controller
         $userComment->comment_status = $this->commentIniStatus;
         $userComment->comment_by = $commentor;
 
-        $userComment->save();
-        return response()->json(['message'=>'saved successfully', 'status'=> 200]);
+        try{
+            $userComment->save();
+            return response()->json(['message'=>'Comment saved successfully', 'status'=> 201]);
+        }catch(QueryException $ex){
+            return response()->json(['message' => 'Failed to save comment', 'status' => 500]);
+        }        
     }
 
     /**
@@ -84,7 +106,7 @@ class CommentController extends Controller
                                 
         ]);       
         
-        $comment->mod_comment = $request->ori_comment;
+        $comment->mod_comment = $request->mod_comment;
         $comment->comment_status = $this->commentPubStatus;        
 
         $comment->save();
@@ -97,5 +119,26 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         //
+        $comment->delete();
+        return response()->json(['message' => 'Product deleted successfully']);
+    }
+
+    /**
+     * Call sp_GetBlogComments stored procedure to retrieve comments for specific blog post.
+     */
+    public function getBlogComments($blogId){
+        // check for authorized action
+        if(Auth::check()){
+            try{
+                $commentList = DB::select('CALL sp_GetBlogComments('.$blogId.')');
+                return response()->json(['comments'=>$commentList, 'status'=>200],200);
+            }catch(QueryException $ex){
+                return response()->json(['message'=>'Error!', 'status'=> 500],500);
+            }
+            
+        }else{
+            return response()->json(['message'=>'unauthorized user', 'status'=> 401],401); // unauthorized access
+        }
+        
     }
 }

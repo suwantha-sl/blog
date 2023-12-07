@@ -32,8 +32,8 @@
             errors: {},
             message: ''
         }
-    },
-    methods: {
+    },	
+    methods: {	
         async login() {
             
             let response; // define variable to store response
@@ -50,7 +50,8 @@
 
                     if(response.data.user){
                         localStorage.setItem('userType', response.data.user.user_type); // get the user type SA - Super Amin, BA - Blog Admin 
-                        localStorage.setItem('userId', response.data.user.id);   // get the user id and save to local storage                    
+                        localStorage.setItem('userId', response.data.user.id);   // get the user id and save to local storage	
+							console.log(localStorage.getItem('userType'));
                     }
 
 
@@ -59,7 +60,7 @@
 
 
                     // Redirecting to the home page
-                    this.$router.push('/');
+                    this.$router.push('/blogs/create');
                 }
             
             } catch (error) {

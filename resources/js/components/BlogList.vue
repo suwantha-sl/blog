@@ -17,8 +17,8 @@
                     <td>
                       <div class="row gap-3">
                         <router-link :to="`/blogs/${article.id}/view`" class="p-2 col border btn btn-success">Read</router-link>
-                        <router-link :to="`/blogs/${article.id}/edit`" class="p-2 col border btn btn-success">Edit</router-link>
-                        <button @click="deleteUser(article.id)" type="button" class="p-2 col border btn btn-danger">Delete</button>
+                        <router-link :to="`/blogs/${article.id}/edit`" class="p-2 col border btn btn-success" v-if="isEditable(article)">Edit</router-link>
+                        <button @click="deleteBlog(article.id)" type="button" class="p-2 col border btn btn-danger" v-if="isEditable(article)">Delete</button>
                       </div>
                     </td>
                 </tr>
@@ -32,7 +32,18 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      articles: []
+      articles: [],
+      userID: localStorage.getItem('userId'), // get userId from localStorage
+      uType: localStorage.getItem('userType') // get userType from localStorage
+    }
+  },
+  computed:{
+    isEditable() {
+      return(article) => {
+        // Check if the user is the author or has UserType SA
+        console.log(article.author);
+        return article.author === parseInt(this.userID) || this.uType === 'SA';
+      };
     }
   },
   async created() {
@@ -42,16 +53,25 @@ export default {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },
                     withCredentials: true,
-      });      
-      this.articles = response.data;      
+      }); 
+
+      if(response.data.status == 200){
+        this.articles = response.data.blogs;
+      }else{
+        // unauthorize access
+      }     
     } catch (error) {
       console.error(error);
     }
-  },
+  },  
   methods: {
-    async deleteUser(id) {
+    async deleteBlog(id) {
       try {
-        await axios.delete(`/api/blogs/${id}`);
+        await axios.delete(`/api/blogs/${id}`,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+        });
         this.articles = this.articles.filter(article => article.id !== id);
       } catch (error) {
         console.error(error);

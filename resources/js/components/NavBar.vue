@@ -1,15 +1,12 @@
 <template>
 <!-- Navigation menu section -->
 
-        <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
-            <li>
-                <router-link to="/" v-if="isLoggedIn" class="nav-link text-white" style="text-decoration: none; color: white;"><svg class="bi d-block mx-auto mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 21q-.625 0-1.063-.438T3 19.5v-1.9l4-3.55V21H4.5ZM8 21v-4h8v4H8Zm9 0v-8.2L12.725 9l3.025-2.675l4.75 4.225q.25.225.375.513t.125.612V19.5q0 .625-.438 1.063T19.5 21H17ZM3 16.25v-4.575q0-.325.125-.625t.375-.5L11 3.9q.2-.2.463-.287T12 3.525q.275 0 .537.088T13 3.9l2 1.775L3 16.25Z"/></svg>Home</router-link>
-            </li>
+        <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">            
             <li>
                 <router-link to="/users/create" v-if="isSuperAdmin" class="nav-link text-white" style="text-decoration: none; color: white;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>&nbsp;Create User</router-link>
             </li>
             <li>
-                <router-link to="/users/create" v-if="isSuperAdmin" class="nav-link text-white" style="text-decoration: none; color: white;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>&nbsp;View Users</router-link>
+                <router-link to="/" v-if="isSuperAdmin" class="nav-link text-white" style="text-decoration: none; color: white;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>&nbsp;View Users</router-link>
             </li>
             <li>
                 <router-link to="/blogs/create" v-if="isLoggedIn" class="nav-link text-white" style="text-decoration: none; color: white;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="14 2 18 6 7 17 3 17 3 13 14 2"></polygon><line x1="3" y1="22" x2="21" y2="22"></line></svg>&nbsp;Create Blog Post</router-link>
@@ -37,10 +34,11 @@ import { mapState, mapActions } from 'vuex';
 export default {  
   computed: {
     // Using Vuex helpers to map the 'isLoggedIn' state to a computed property
-    ...mapState(['isLoggedIn'])   
-  },  
-  methods: {
-    async logout(evt){
+    ...mapState(['isLoggedIn','isSuperAdmin'])   
+  }, 
+  
+  methods: {   
+    async logout(evt){	
         if(confirm("Are you sure you want to logout?")){
             try{
                 const logOutResponse = await axios.get(`/api/logout`,{
