@@ -56,7 +56,11 @@ export default {
   },
   async created() {
     if (!this.isNewUser) {
-      const response = await axios.get(`/api/users/${this.$route.params.id}`);
+      const response = await axios.get(`/api/users/${this.$route.params.id}`,{
+					headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`                        
+                    }
+	  });
       this.user = response.data;
       console.log( response);
     }
@@ -65,9 +69,17 @@ export default {
     async submitForm() {
       try {
         if (this.isNewUser) {
-          await axios.post('/api/users', this.user);
+          await axios.post('/api/users', this.user,{
+					headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`                        
+                    }
+		  });
         } else {
-          await axios.put(`/api/users/${this.$route.params.id}`, this.user);
+          await axios.put(`/api/users/${this.$route.params.id}`, this.user,{
+					headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`                        
+                    }
+		  });
         }
         this.$router.push('/');
       } catch (error) {

@@ -43,7 +43,11 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('/api/users');
+      const response = await axios.get('/api/users',{
+					headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`                        
+                    }
+	  });
       this.users = response.data;
     } catch (error) {
       console.error(error);
@@ -52,7 +56,11 @@ export default {
   methods: {
     async deleteUser(id) {
       try {
-        await axios.delete(`/api/users/${id}`);
+        await axios.delete(`/api/users/${id}`,{
+					headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`                        
+                    }
+		});
         this.users = this.users.filter(user => user.id !== id);
       } catch (error) {
         console.error(error);
