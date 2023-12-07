@@ -1,66 +1,80 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Prerequisite:
+PHP 8.1 or higher (extensions such as openssl, pdo_mysqli etc... in php.ini file should be enabled)
+MySQL 5.7 
+Laravel 10.0.*
+Node Js
+This guide will support setting up the project in a Windows OS environment.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+1. Download the project folder from the below GitHub link.
+.....Link........
 
-## About Laravel
+2. Extract a copy of the downloaded folder to your local hard drive (Eg, C or D drive). 
+In my example it is D:\vhost\blog-app.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+3. Create a database with the name 'blogapp_db' using any DBMS application like MySQL workbench, phpmy admin, etc... You may use collation as 'utf8_unicode_ci' for this database.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+4. Go to the project folder and open the .env file which is in the root folder. 
+In .env file replace the database username and password with your database username and password in the following lines.
+DB_USERNAME=your database username
+DB_PASSWORD=your database password
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+5. The provided mail SMTP configurations with gmail, in the .env file are, correct and working fine. But if you wish to use your own mail server you may replace the parameters of the below lines in the .env file with your mail server details.
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+6. Setting up the database tables.
+	There are 2 options to set up the database tables.
+option 1 (using the blogapp-db.sql  file): 
+	Look for the blogapp-db.sql file in the root directory of the extracted project folder in your local hard drive.
+	Log into the 'blogapp_db' database which you created in step 3 with any DBMS application like MySQL workbench, PHP myadmin and execute queries in the blogapp-db.sql file or directly import the blogapp-db.sql file to set up the tables and stored procedures.	
+option 2 (using php artisan migration commands):
+	Open the command prompt and go to the project directory. In my example it is D:\vhost\blog-app
+	Then type php artisan migrate and press enter. After executing this command the necessary tables will be created if you have correctly configured your database in steps 3 and 4.
+	Then type php artisan db:seed --class=UserSeeder and press enter. This will create sample 3 users in users table. 
+	Look for the sp_GetBlogComments.sql and sp_GetIndividualComments.sql' file in the root directory of the extracted project folder in your local hard drive. 
+	Log into the 'blogapp_db ' database with any DBMS application and execute the above mentioned stored procedure sql files in order to create the stored procedure. 
+7. After completing step 6 successfully you should have below mentioned tables and stored procedure 
+in your 'blogapp_db' database.
+	list of table names:
+		blog_posts
+		comments
+		failed_jobs
+		jobs
+		migrations
+		password_reset_tokens
+		personal_access_tokens
+		users
 
-## Learning Laravel
+	stored procedure name:
+		sp_GetBlogComments
+		sp_GetIndividualComments
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+** 'sp_GetBlogComments' stored procedure is used to retrieve all published comments related to a particular blog post. Blog id is the input parameter for this stored procedure.
+** ‘sp_GetIndividualComments’ stored procedure is used to retrieve comments related to own blogs if its Blog Admin. Super Admins will see all comments. User id and User Type are the input parameters.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+8.  Executing the application
+	Open the command prompt (cmd) and go to the project directory. In my example it is D:\vhost\blog-app
+	Type php artisan storage:link and press enter. (This is important to link storage folder to public folder and used in image uploading and displaying related to blogs.)
+	Type php artisan serve and press enter.
+	Open another command prompt (terminal) and go to the project directory and type npm run dev and press enter.
+	Open another command prompt (terminal) and go to the project directory and type php artisan queue:work and press enter.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+** This project uses Laravel's Job Queue to send emails so that it improves the performance of the application. All the qued jobs will be saved to 'jobs' table in the 'blogapp_db' database. Execution of artisan queue:work command will process the job queue.
 
-## Laravel Sponsors
+9. Finally open your web browser and type ' http://127.0.0.1:8000 ' in your web browser. You will see the login page as shown below.
+	Please use below login credentials.
+	Super Admin Account:
+		username: test@test.com
+		password: password
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+	Blog Admin Account:
+		username: ishansg@yahoo.com.sg
+		password: password
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Blog Admin Account:
+		username: suwantha.ig@gmail.com
+		password: password
