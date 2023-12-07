@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               5.7.43-log - MySQL Community Server (GPL)
+-- Server version:               5.7.44-log - MySQL Community Server (GPL)
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.5.0.6677
+-- HeidiSQL Version:             12.6.0.6765
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,10 +16,12 @@
 
 
 -- Dumping database structure for blogapp_db
+DROP DATABASE IF EXISTS `blogapp_db`;
 CREATE DATABASE IF NOT EXISTS `blogapp_db` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 USE `blogapp_db`;
 
 -- Dumping structure for table blogapp_db.blog_posts
+DROP TABLE IF EXISTS `blog_posts`;
 CREATE TABLE IF NOT EXISTS `blog_posts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `article_title` varchar(225) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -36,9 +38,9 @@ CREATE TABLE IF NOT EXISTS `blog_posts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.blog_posts: ~0 rows (approximately)
-DELETE FROM `blog_posts`;
 
 -- Dumping structure for table blogapp_db.comments
+DROP TABLE IF EXISTS `comments`;
 CREATE TABLE IF NOT EXISTS `comments` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `ori_comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -56,9 +58,9 @@ CREATE TABLE IF NOT EXISTS `comments` (
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.comments: ~0 rows (approximately)
-DELETE FROM `comments`;
 
 -- Dumping structure for table blogapp_db.failed_jobs
+DROP TABLE IF EXISTS `failed_jobs`;
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -72,9 +74,9 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.failed_jobs: ~0 rows (approximately)
-DELETE FROM `failed_jobs`;
 
 -- Dumping structure for table blogapp_db.jobs
+DROP TABLE IF EXISTS `jobs`;
 CREATE TABLE IF NOT EXISTS `jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -88,9 +90,9 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.jobs: ~0 rows (approximately)
-DELETE FROM `jobs`;
 
 -- Dumping structure for table blogapp_db.migrations
+DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -99,9 +101,9 @@ CREATE TABLE IF NOT EXISTS `migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.migrations: ~0 rows (approximately)
-DELETE FROM `migrations`;
 
 -- Dumping structure for table blogapp_db.password_reset_tokens
+DROP TABLE IF EXISTS `password_reset_tokens`;
 CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -110,9 +112,9 @@ CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.password_reset_tokens: ~0 rows (approximately)
-DELETE FROM `password_reset_tokens`;
 
 -- Dumping structure for table blogapp_db.personal_access_tokens
+DROP TABLE IF EXISTS `personal_access_tokens`;
 CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -130,9 +132,9 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
 ) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table blogapp_db.personal_access_tokens: ~0 rows (approximately)
-DELETE FROM `personal_access_tokens`;
 
 -- Dumping structure for procedure blogapp_db.sp_GetBlogComments
+DROP PROCEDURE IF EXISTS `sp_GetBlogComments`;
 DELIMITER //
 CREATE PROCEDURE `sp_GetBlogComments`(IN blogId INTEGER)
 BEGIN
@@ -147,6 +149,7 @@ END//
 DELIMITER ;
 
 -- Dumping structure for procedure blogapp_db.sp_GetIndividualComments
+DROP PROCEDURE IF EXISTS `sp_GetIndividualComments`;
 DELIMITER //
 CREATE PROCEDURE `sp_GetIndividualComments`(IN userId INTEGER, IN userType VARCHAR(20))
 BEGIN
@@ -172,6 +175,7 @@ END//
 DELIMITER ;
 
 -- Dumping structure for table blogapp_db.users
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `f_name` varchar(225) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -187,10 +191,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table blogapp_db.users: ~0 rows (approximately)
-DELETE FROM `users`;
+-- Dumping data for table blogapp_db.users: ~3 rows (approximately)
+INSERT INTO `users` (`id`, `f_name`, `l_name`, `email`, `email_verified_at`, `password`, `user_type`, `login_attempt`, `user_status`, `remember_token`, `created_at`, `updated_at`) VALUES
+	(3, 'Ishan', 'Gunasekara', 'ishansg@yahoo.com.sg', NULL, '$2y$10$2PbWt3aqj1.5hgjuUKOxb.dlhebzqc8wvLHGTggBZP1VmumD/zPHu', 'BA', 1, 'Y', NULL, '2023-12-08 02:42:00', '2023-12-08 02:42:00'),
+	(4, 'Peter', 'Thomas', 'test@test.com', NULL, '$2y$10$wTYSkuNhHvZ5PaqjFCrqJ.MlR9VmIcVeMdhE5RfvJHvsaYGPpvN6.', 'SA', 1, 'Y', NULL, '2023-12-08 02:42:00', '2023-12-08 02:42:00'),
+	(5, 'Jason', 'Roy', 'suwantha.ig@gmail.com', NULL, '$2y$10$IGlhyf4dPgfq/a/BhoQ.8eCMgq6mHM6DELtmwYKEaVLeD6HlTLRq.', 'BA', 1, 'Y', NULL, '2023-12-08 02:42:00', '2023-12-08 02:42:00');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
