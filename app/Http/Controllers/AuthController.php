@@ -37,6 +37,13 @@ class AuthController extends Controller
         // if credentials are valid get the authenticated user
         $user = $request->user();
 
+        // Check if the user_status column is 'Y'
+        if ($user->user_status != 'Y') {
+            // If user_status is not 'Y', return an error response
+            Auth::logout(); // Logout the user to invalidate the login attempt
+            return response()->json(['message'=>'User is not active', 'status'=>401], 401);
+        }
+
         // create a token for user
         $token = $user->createToken('authToken')->plainTextToken;
 

@@ -16,6 +16,7 @@
             </span>
             <!-- Submit button -->
             <button type="submit">Login</button>
+            <router-link to="/forgotpassword">Forgot Password?</router-link>
         </form>
     </div>
 </template>
@@ -34,7 +35,7 @@
     },
     methods: {
         async login() {
-            console.log('Login function called');
+            
             let response; // define variable to store response
             try {
                 // Making POST request to "/login" endpoint with email and password as data
