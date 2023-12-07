@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Route::middleware('auth:sanctum')->get('/logout',[AuthController::class,'logout']);
 
 Route::post('/userlogin', [AuthController::class, 'login']);
+Route::post('/forget-password', [ForgotPasswordController::class, 'passwordReset']);
+Route::post('/resetpassword', [ForgotPasswordController::class, 'changePassword']);
 
 Route::resource('users',UserController::class);
 

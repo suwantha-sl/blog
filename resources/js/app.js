@@ -26,6 +26,8 @@ import BlogList from './components/BlogList.vue';
 import BlogShow from './components/BlogShow.vue';
 import ViewPendingComments from './components/ViewPendingComments.vue';
 import ModerateComment from './components/ModerateComment.vue';
+import PasswordReset from './components/PasswordReset.vue';
+import PasswordResetForm from './components/PasswordResetForm.vue';
 //app.component('example-component', ExampleComponent);
 
 /**
@@ -58,6 +60,8 @@ const router = createRouter({
         { path: '/blogs', component: BlogList, meta:{public: false} },
         { path: '/comments', component: ViewPendingComments, meta:{public: false} },
         { path: '/comments/:id/edit', component: ModerateComment, meta:{public: false} },
+        { path: '/forgotpassword', component: PasswordReset, meta:{public: true} },
+        { path: '/resetpasswordlink/:token', component: PasswordResetForm, meta:{public: true} },
     ]
 });
 
